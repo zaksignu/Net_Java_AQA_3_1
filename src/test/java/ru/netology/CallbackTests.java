@@ -17,7 +17,7 @@ public class CallbackTests {
     private WebDriver driver;
     @BeforeAll
     public static void firstSetUp() {
-        System.setProperty("webdriver.chrome.driver","./driver/win/chromedriver.exe");
+       // System.setProperty("webdriver.chrome.driver","./driver/win/chromedriver.exe");
 
         WebDriverManager.chromedriver().setup();
     }
