@@ -28,7 +28,7 @@ public class CallbackTests {
         options.addArguments("--headless");
         driver = new ChromeDriver(options);
     }
-
+    @Order(1)
     @Test
     public void shouldWorkWithHappyPath() {
         driver.get("http://localhost:9999/");
@@ -40,7 +40,7 @@ public class CallbackTests {
         String expected = "Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.";
         assertEquals(expected, actual);
     }
-
+    @Order(2)
     @Test
     public void shouldNotWorkWithEnglishName() {
         driver.get("http://localhost:9999/");
@@ -50,7 +50,7 @@ public class CallbackTests {
         String expected = "Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.";
         assertEquals(expected, actual);
     }
-
+    @Order(3)
     @Test
     public void shouldNotWorkWithNoSpacesRu() {
         driver.get("http://localhost:9999/");
@@ -60,7 +60,7 @@ public class CallbackTests {
         String expected = "Укажите точно как в паспорте";
         assertEquals(expected, actual);
     }
-
+    @Order(4)
     @Test
     public void shouldNotWorkWithNoSpacesEng() {
         driver.get("http://localhost:9999/");
@@ -70,7 +70,7 @@ public class CallbackTests {
         String expected = "Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.";
         assertEquals(expected, actual);
     }
-
+    @Order(5)
     @Test
     public void shouldNotWorkWithBlankInput() {
         driver.get("http://localhost:9999/");
@@ -80,7 +80,7 @@ public class CallbackTests {
         String expected = "Поле обязательно для заполнения";
         assertEquals(expected, actual);
     }
-
+    @Order(6)
     @Test
     public void shouldNotWorkWithSpaces() {
         driver.get("http://localhost:9999/");
@@ -90,7 +90,7 @@ public class CallbackTests {
         String expected = "Поле обязательно для заполнения";
         assertEquals(expected, actual);
     }
-
+    @Order(7)
     @Test
     public void shouldNotWorkWithNoPlus() {
         driver.get("http://localhost:9999/");
@@ -101,7 +101,7 @@ public class CallbackTests {
         String expected = "Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.";
         assertEquals(expected, actual);
     }
-
+    @Order(8)
     @Test
     public void shouldNotWorkWithLessNumbers() {
         driver.get("http://localhost:9999/");
@@ -112,7 +112,7 @@ public class CallbackTests {
         String expected = "Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.";
         assertEquals(expected, actual);
     }
-
+    @Order(9)
     @Test
     public void shouldNotWorkWithMoreNumbers() {
         driver.get("http://localhost:9999/");
@@ -123,7 +123,7 @@ public class CallbackTests {
         String expected = "Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.";
         assertEquals(expected, actual);
     }
-
+    @Order(10)
     @Test
     public void shouldNotWorkCheckbox() {
         driver.get("http://localhost:9999/");
