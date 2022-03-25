@@ -1,24 +1,22 @@
 package ru.netology;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.apache.hc.core5.util.Asserts;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+
+
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CallbackTests {
     private WebDriver driver;
+
     @BeforeAll
     public static void firstSetUp() {
-       // System.setProperty("webdriver.chrome.driver","./driver/win/chromedriver.exe");
-
         WebDriverManager.chromedriver().setup();
     }
 
@@ -29,30 +27,116 @@ public class CallbackTests {
         options.addArguments("--no-sandbox");
         options.addArguments("--headless");
         driver = new ChromeDriver(options);
- //       driver = new ChromeDriver();
-
     }
+
     @Test
-    public void shouldWork(){
+    public void shouldWorkWithHappyPath() {
         driver.get("http://localhost:9999/");
         driver.findElement(By.name("name")).sendKeys("Рууукк Кеерт");
-        driver.findElement(By.name("phone")).sendKeys("+79167451456");
+        driver.findElement(By.name("phone")).sendKeys("+79137451456");
         driver.findElement(By.className("checkbox__box")).click();
         driver.findElement(By.className("button")).click();
-        String actual =  driver.findElement(By.className("paragraph")).getText().trim();
+        String actual = driver.findElement(By.className("paragraph")).getText().trim();
         String expected = "Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.";
-        assertEquals(expected,actual);
-      //  System.out.println("Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.");
+        assertEquals(expected, actual);
     }
 
-//    @Test
-//    public void shouldWork_1(){
-//        driver.get("http://localhost:9999/");
-//        System.out.println("");
-//    }
+    @Test
+    public void shouldNotWorkWithEnglishName() {
+        driver.get("http://localhost:9999/");
+        driver.findElement(By.name("name")).sendKeys("Ruuk Keept");
+        driver.findElement(By.className("button")).click();
+        String actual = driver.findElement(By.cssSelector(".input_type_text .input__sub")).getText().trim();
+        String expected = "Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldNotWorkWithNoSpacesRu() {
+        driver.get("http://localhost:9999/");
+        driver.findElement(By.name("name")).sendKeys("Руук");
+        driver.findElement(By.className("button")).click();
+        String actual = driver.findElement(By.cssSelector(".input_type_text .input__sub")).getText().trim();
+        String expected = "Укажите точно как в паспорте";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldNotWorkWithNoSpacesEng() {
+        driver.get("http://localhost:9999/");
+        driver.findElement(By.name("name")).sendKeys("Ruuk");
+        driver.findElement(By.className("button")).click();
+        String actual = driver.findElement(By.cssSelector(".input_type_text .input__sub")).getText().trim();
+        String expected = "Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldNotWorkWithBlankInput() {
+        driver.get("http://localhost:9999/");
+        driver.findElement(By.name("name")).sendKeys("");
+        driver.findElement(By.className("button")).click();
+        String actual = driver.findElement(By.cssSelector(".input_type_text .input__sub")).getText().trim();
+        String expected = "Поле обязательно для заполнения";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldNotWorkWithSpaces() {
+        driver.get("http://localhost:9999/");
+        driver.findElement(By.name("name")).sendKeys(" ");
+        driver.findElement(By.className("button")).click();
+        String actual = driver.findElement(By.cssSelector(".input_type_text .input__sub")).getText().trim();
+        String expected = "Поле обязательно для заполнения";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldNotWorkWithNoPlus() {
+        driver.get("http://localhost:9999/");
+        driver.findElement(By.name("name")).sendKeys("Рууукк Кеерт");
+        driver.findElement(By.name("phone")).sendKeys("89171723121");
+        driver.findElement(By.className("button")).click();
+        String actual = driver.findElement(By.cssSelector(".input_type_tel  .input__sub")).getText().trim();
+        String expected = "Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldNotWorkWithLessNumbers() {
+        driver.get("http://localhost:9999/");
+        driver.findElement(By.name("name")).sendKeys("Рууукк Кеерт");
+        driver.findElement(By.name("phone")).sendKeys("+791717231");
+        driver.findElement(By.className("button")).click();
+        String actual = driver.findElement(By.cssSelector(".input_type_tel  .input__sub")).getText().trim();
+        String expected = "Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldNotWorkWithMoreNumbers() {
+        driver.get("http://localhost:9999/");
+        driver.findElement(By.name("name")).sendKeys("Рууукк Кеерт");
+        driver.findElement(By.name("phone")).sendKeys("+791717231123123");
+        driver.findElement(By.className("button")).click();
+        String actual = driver.findElement(By.cssSelector(".input_type_tel  .input__sub")).getText().trim();
+        String expected = "Телефон указан неверно. Должно быть 11 цифр, например, +79012345678.";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldNotWorkCheckbox() {
+        driver.get("http://localhost:9999/");
+        driver.findElement(By.name("name")).sendKeys("Рууукк Кеерт");
+        driver.findElement(By.name("phone")).sendKeys("+79137451456");
+        driver.findElement(By.className("button")).click();
+        String actual = driver.findElement(By.className("checkbox__text")).getCssValue("color");
+        String expected = "rgba(255, 92, 92, 1)";
+        assertEquals(expected, actual);
+    }
 
     @AfterEach
-    public void finishOne(){
+    public void finishOne() {
         driver.quit();
         driver = null;
 
